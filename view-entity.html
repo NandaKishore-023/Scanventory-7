@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanventory - View Entity</title>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/view-entity.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./src/Scanventory-logo.png" class="header-logo-img">
+            </div>
+            <div class="user">
+                <img class="avatar" src="./src/user.png">
+                <div class="nav-username" id="username">Username</div>
+            </div>
+            <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
+            <button class="nav-btn" onclick="window.location.href='inventory.html'">Inventory Management</button>
+            <button class="nav-btn" onclick="window.location.href='user-management.html'">User Management</button>
+        </aside>
+
+        <div class="main">
+            <header class="header">
+                <h2 id="entityTitle">Loading...</h2>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </header>
+
+            <div class="dashboard-body">
+                <div class="content">
+                    <!-- Entity Details Card -->
+                    <div class="entity-view-card">
+                        <div class="entity-header">
+                            <div class="entity-icon" id="entityIcon">📦</div>
+                            <div class="entity-info">
+                                <h1 id="entityName">-</h1>
+                                <p id="entityType" class="entity-type">-</p>
+                            </div>
+                        </div>
+
+                        <div class="entity-details-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">ID</span>
+                                <span class="detail-value" id="entityId">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Created</span>
+                                <span class="detail-value" id="entityCreated">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Last Updated</span>
+                                <span class="detail-value" id="entityUpdated">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Location Path -->
+                        <div class="location-path" id="locationPath"></div>
+
+                        <!-- Entity-specific details -->
+                        <div id="entitySpecificDetails"></div>
+
+                        <!-- Actions -->
+                        <div class="entity-actions">
+                            <button class="btn btn-primary" onclick="editEntity()">Edit</button>
+                            <button class="btn btn-warning" onclick="showMoveForm()">Move</button>
+                            <button class="btn btn-danger" onclick="deleteEntity()">Delete</button>
+                        </div>
+
+                        <!-- QR Code Section -->
+                        <div class="qr-section">
+                            <h3>QR Code</h3>
+                            <div class="qr-container">
+                                <div id="qrcode"></div>
+                                <div class="qr-actions">
+                                    <button class="btn btn-small" onclick="downloadQR()">Download QR</button>
+                                    <button class="btn btn-small" onclick="printQR()">Print QR</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Children Section (for Warehouses, Racks, Shelves, Boxes) -->
+                    <div class="children-section" id="childrenSection">
+                        <h3>Contents</h3>
+                        <div id="childrenList" class="children-grid"></div>
+                    </div>
+
+                    <!-- Move Form (hidden by default) -->
+                    <div class="move-form" id="moveForm" style="display: none;">
+                        <h3>Move Item</h3>
+                        <div class="form-group">
+                            <label>Destination Warehouse</label>
+                            <select id="moveWarehouse" onchange="loadMoveRacks()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination Rack</label>
+                            <select id="moveRack" onchange="loadMoveShelves()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination Shelf</label>
+                            <select id="moveShelf" onchange="loadMoveBoxes()"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Destination Box (Optional)</label>
+                            <select id="moveBox"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Quantity to Move</label>
+                            <input type="number" id="moveQuantity" min="1">
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn btn-success" onclick="moveEntity()">Move</button>
+                            <button class="btn btn-secondary" onclick="hideMoveForm()">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="activity">
+                    <h3>Recent Activity</h3>
+                    <div id="activityList"></div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/view-entity.js"></script>
+    <script src="js/sidebar-toggle.js" defer></script>
+</body>
+
+</html>

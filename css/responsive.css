@@ -1,0 +1,812 @@
+/* ============================================================
+   SCANVENTORY — RESPONSIVE & SIDEBAR TOGGLE STYLES
+   Covers: mobile (≤600px), tablet (601–1024px), desktop (>1024px)
+   ============================================================ */
+
+/* ── SIDEBAR TOGGLE BUTTON (hamburger) ── */
+.sidebar-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    left: 16px;
+    z-index: 1100;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: var(--primary);
+    cursor: pointer;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    box-shadow: 0 4px 14px rgba(247, 197, 72, 0.4);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    padding: 0;
+}
+
+.sidebar-toggle:hover {
+    background: var(--primary-dark);
+    transform: scale(1.07);
+    box-shadow: 0 6px 18px rgba(247, 197, 72, 0.5);
+}
+
+.sidebar-toggle .bar {
+    display: block;
+    width: 22px;
+    height: 2.5px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: transform 0.35s cubic-bezier(.77, 0, .175, 1),
+        opacity 0.25s ease,
+        width 0.25s ease;
+    transform-origin: center;
+}
+
+/* Animate bars → X when open */
+.sidebar-toggle.is-open .bar:nth-child(1) {
+    transform: translateY(7.5px) rotate(45deg);
+}
+
+.sidebar-toggle.is-open .bar:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+
+.sidebar-toggle.is-open .bar:nth-child(3) {
+    transform: translateY(-7.5px) rotate(-45deg);
+}
+
+/* ── ACTIVITY (RIGHT) PANEL TOGGLE BUTTON ── */
+.activity-toggle {
+    display: none;
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 1100;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(67, 124, 144, 0.35);
+    transition: background 0.2s ease, transform 0.2s ease;
+    padding: 0;
+    color: white;
+}
+
+.activity-toggle:hover {
+    background: var(--accent-dark);
+    transform: scale(1.07);
+}
+
+/* ── OVERLAYS ── */
+.sidebar-overlay,
+.activity-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(3px);
+    z-index: 1050;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.visible,
+.activity-overlay.visible {
+    opacity: 1;
+}
+
+/* ── GPU ACCELERATION — only on mobile/tablet where transforms are used ── */
+/* NOTE: Applied inside @media (max-width: 1024px) only.
+   At desktop, will-change:transform would create a stacking context
+   that makes .activity overlap .content — do NOT apply globally. */
+
+/* ── SCROLL LOCK ── */
+body.sidebar-open,
+body.activity-open {
+    overflow: hidden;
+}
+
+/* ── GLOBAL OVERFLOW GUARD ── */
+html,
+body {
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+/* ── HEADER: form/actions always flex ── */
+.header form,
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ── CONTENT BASE: always box-sizing ── */
+.content,
+.entity-view-card,
+.action-card,
+.entity-list {
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+@media (min-width: 1024px) and (max-width: 1245px) {
+
+    .stats {
+            grid-template-columns: 1fr !important;
+        }
+    
+        .stats .card {
+            min-height: 300px;
+            max-height: none;
+        }
+
+}
+
+
+/* ============================================================
+   NARROW DESKTOP — 1025px to 1280px
+   ============================================================ */
+@media (min-width: 1025px) and (max-width: 1280px) {
+    .sidebar {
+        width: 240px;
+        min-width: 240px;
+        padding: 20px 12px;
+    }
+
+    .header-logo-img {
+        max-width: 200px;
+    }
+
+    /* .activity width handled by clamp(240px,22vw,320px) in dashboard.css */
+
+    #searchBar {
+        width: 220px;
+    }
+
+    .stats {
+        grid-template-columns: 1fr 1.3fr;
+    }
+
+    .stats .card {
+        min-height: 380px;
+    }
+}
+
+/* ============================================================
+   TABLET + MOBILE — ≤1024px
+   THE CORE RESPONSIVE BLOCK
+   ============================================================ */
+@media (max-width: 1024px) {
+
+    /* ── Show toggle buttons ── */
+    .sidebar-toggle,
+    .activity-toggle {
+        display: flex;
+    }
+
+    /* ── Show overlays ── */
+    .sidebar-overlay,
+    .activity-overlay {
+        display: block;
+    }
+
+    /* ── Sidebar: fixed, slides in from left ── */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 1080;
+        width: 280px !important;
+        min-width: 280px !important;
+        transform: translateX(-105%);
+        transition: transform 0.38s cubic-bezier(.77, 0, .175, 1),
+            box-shadow 0.38s ease;
+        box-shadow: none;
+        overflow-y: auto;
+        will-change: transform;
+        backface-visibility: hidden;
+    }
+
+    .sidebar.is-open {
+        transform: translateX(0);
+        box-shadow: 4px 0 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ── Activity panel: fixed, slides in from right ── */
+    .activity {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100vh;
+        z-index: 1080;
+        width: 300px !important;
+        min-width: 300px !important;
+        transform: translateX(105%);
+        transition: transform 0.38s cubic-bezier(.77, 0, .175, 1),
+            box-shadow 0.38s ease;
+        box-shadow: none;
+        overflow-y: auto;
+        will-change: transform;
+        backface-visibility: hidden;
+    }
+
+    .activity.is-open {
+        transform: translateX(0);
+        box-shadow: -4px 0 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* ── CORE LAYOUT FIX ──────────────────────────────────
+       Problem: .layout { display: flex } means .main is a
+       flex child. When sidebar/activity go position:fixed,
+       .main still has min-width:auto (= content width) and
+       can grow far wider than the viewport.
+
+       Solution: Switch layout to display:block so .main
+       becomes a normal block-level box that naturally fills
+       100% of the viewport width.
+    ─────────────────────────────────────────────────────── */
+    .layout {
+        display: block;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    .main {
+        width: 100%;
+        max-width: 100vw;
+        min-width: 0;
+        height: 100vh;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* ── Dashboard body: stack content + remove overflow:hidden ── */
+    .dashboard-body {
+        flex: 1;
+        flex-direction: column;
+        overflow-y: auto;
+        /* allow the body to scroll on mobile */
+        overflow-x: hidden;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* ── Content: full width, scrollable ── */
+    .content {
+        width: 100%;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+
+    /* ── Header: full width, inset padding for toggle buttons ── */
+    .header {
+        width: 100%;
+        box-sizing: border-box;
+        height: 60px;
+        padding: 0 64px 0 68px;
+        /* right: activity btn, left: hamburger */
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-shrink: 0;
+    }
+
+    /* ── Search bar: flex-fill, never overflows ── */
+    #searchBar {
+        flex: 1;
+        width: auto !important;
+        min-width: 0;
+        max-width: 240px;
+    }
+
+    /* ── Logout button: no extra margin ── */
+    .header .logout-btn {
+        flex-shrink: 0;
+        margin-right: 0;
+    }
+
+    /* ── Entity page title: truncates gracefully ── */
+    .header h2 {
+        font-size: 1.1rem;
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    /* ── Stats: single column ── */
+    .stats {
+        grid-template-columns: 1fr !important;
+    }
+
+    .stats .card {
+        min-height: 300px;
+        max-height: none;
+    }
+
+    .chart-container {
+        height: 180px;
+    }
+
+    /* ── Occupancy: wrap ── */
+    .occupancy-grid {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    /* ── Tabs: horizontal scroll ── */
+    .tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 12px;
+    }
+
+    .tabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* ── Users table: horizontal scroll ── */
+    .users-table {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .users-table table {
+        min-width: 600px;
+    }
+
+    /* ── Modal: safe width ── */
+    .modal-content {
+        width: 92%;
+        max-width: 540px;
+        margin: 60px auto;
+        box-sizing: border-box;
+    }
+
+    /* ── Form rows: single column ── */
+    .form-row {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ── List header: wrap buttons ── */
+    .list-header {
+        gap: 10px;
+    }
+
+    /* ── Logo ── */
+    .header-logo-img {
+        max-width: 180px;
+    }
+
+    .logo {
+        padding: 0 8px;
+        margin-bottom: 20px;
+    }
+
+    /* ── Nav btn touch targets ── */
+    .nav-btn {
+        min-height: 44px;
+    }
+
+    .tree-header {
+        padding: 10px 12px;
+        min-height: 44px;
+    }
+
+    .tree-leaf {
+        padding: 9px 12px;
+        min-height: 40px;
+    }
+
+    /* ── Activity badge indicator ── */
+    .activity-badge {
+        display: block;
+    }
+}
+
+/* ============================================================
+   MOBILE — ≤600px
+   ============================================================ */
+@media (max-width: 600px) {
+
+    body {
+        font-size: 15px;
+    }
+
+    /* Header */
+    .header {
+        height: 56px;
+        padding: 0 58px 0 62px;
+        gap: 8px;
+    }
+
+    #searchBar {
+        max-width: 160px;
+        font-size: 0.82rem;
+        padding: 8px 12px;
+    }
+
+    .logout-btn {
+        padding: 6px 12px;
+        font-size: 0.82rem;
+    }
+
+    .header h2 {
+        font-size: 0.95rem;
+    }
+
+    /* Toggle buttons: slightly smaller + tighter position */
+    .sidebar-toggle {
+        top: 8px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .activity-toggle {
+        top: 8px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+    }
+
+    /* Sidebar/Activity: narrower on small phones */
+    .sidebar {
+        width: 270px !important;
+        min-width: 270px !important;
+        padding: 16px 12px;
+    }
+
+    .activity {
+        width: 280px !important;
+        min-width: 280px !important;
+        padding: 16px;
+    }
+
+    /* Content */
+    .content {
+        padding: 14px 12px;
+    }
+
+    .content h2 {
+        font-size: 1.4rem;
+        margin-bottom: 14px;
+    }
+
+    /* Cards */
+    .stats {
+        gap: 12px;
+        margin-bottom: 14px;
+    }
+
+    .stats .card {
+        min-height: auto;
+        max-height: none;
+    }
+
+    .card {
+        padding: 16px;
+        border-radius: 12px;
+    }
+
+    .card h1 {
+        font-size: 1.8rem;
+    }
+
+    /* Occupancy */
+    .occupancy-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    #warehouseSelect {
+        width: 100%;
+    }
+
+    /* Rack cards */
+    #rackCards {
+        flex-direction: column;
+    }
+
+    .rack-card {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Recent items */
+    .recent-item {
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .recent-item-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 1.1rem;
+    }
+
+    .recent-item-value {
+        font-size: 0.95rem;
+    }
+
+    /* Tabs */
+    .tabs {
+        gap: 6px;
+        padding-bottom: 10px;
+    }
+
+    .tab {
+        padding: 8px 14px;
+        font-size: 0.88rem;
+    }
+
+    /* Entity items: stack actions below info */
+    .entity-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 14px 12px;
+    }
+
+    .entity-actions {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .entity-actions .btn,
+    .entity-actions .btn-small {
+        flex: 1;
+        min-width: 70px;
+        justify-content: center;
+        font-size: 0.82rem;
+        padding: 8px 10px;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 9px 16px;
+        font-size: 0.88rem;
+    }
+
+    /* Modal */
+    .modal-content {
+        width: 96%;
+        margin: 24px auto;
+        padding: 20px 16px;
+        border-radius: 14px;
+        max-height: 92vh;
+        overflow-y: auto;
+    }
+
+    .modal-large {
+        width: 96% !important;
+    }
+
+    .modal-actions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .modal-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* User stats */
+    .user-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    /* Users table */
+    .users-table table {
+        min-width: 500px;
+    }
+
+    .users-table th,
+    .users-table td {
+        padding: 10px 8px;
+        font-size: 0.82rem;
+    }
+
+    /* Action card */
+    .action-card {
+        padding: 16px;
+    }
+
+    /* Form */
+    .form-row {
+        gap: 12px;
+    }
+
+    /* Permissions grid */
+    .permissions-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    /* View entity page */
+    .entity-view-card {
+        padding: 18px;
+    }
+
+    .entity-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+    }
+
+    .entity-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .entity-details-grid {
+        grid-template-columns: 1fr;
+        padding: 14px;
+    }
+
+    .qr-section {
+        padding: 20px 14px;
+        text-align: center;
+    }
+
+    .qr-container {
+        padding: 14px;
+    }
+
+    #qrcode canvas,
+    #qrcode img {
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    .qr-actions {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .qr-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .children-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .child-card {
+        padding: 12px;
+    }
+
+    .move-form {
+        padding: 18px 14px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    /* List header */
+    .list-header {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-add-small,
+    .btn-move-small {
+        font-size: 0.82rem;
+        padding: 6px 10px;
+    }
+
+    /* Login / signup boxes */
+    .login-box,
+    .signup-box {
+        padding: 24px 18px;
+        margin: 20px 12px;
+        width: auto;
+        box-sizing: border-box;
+    }
+
+    /* Invitation link */
+    .invitation-link {
+        flex-direction: column;
+    }
+
+    .invitation-link input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* User management action buttons */
+    .action-buttons {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .btn-icon {
+        padding: 6px 10px;
+        font-size: 0.85rem;
+    }
+}
+
+/* ============================================================
+   VERY SMALL — ≤400px
+   ============================================================ */
+@media (max-width: 400px) {
+    .children-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .user-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .occupancy-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .tab {
+        padding: 7px 10px;
+        font-size: 0.8rem;
+    }
+
+    .stats .card {
+        padding: 14px;
+    }
+
+    .permissions-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   ACCESSIBILITY — keyboard focus visible
+   ============================================================ */
+.sidebar-toggle:focus-visible,
+.activity-toggle:focus-visible {
+    outline: 3px solid var(--primary-dark);
+    outline-offset: 2px;
+}
+
+/* ============================================================
+   ACTIVITY BADGE — visible on mobile/tablet
+   ============================================================ */
+.activity-badge {
+    display: none;
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 10px;
+    height: 10px;
+    background: var(--danger);
+    border-radius: 50%;
+    border: 2px solid var(--bg-main);
+}

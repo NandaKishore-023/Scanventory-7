@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanventory Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js" defer></script>
+    <script src="js/sidebar-toggle.js" defer></script>
+</head>
+
+<body>
+
+    <div class="layout">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <!-- <h2><span class="qr">▣</span> Scanventory</h2> -->
+                 <img src="./src/Scanventory-logo.png" class="header-logo-img">
+            </div>
+
+            <div class="user">
+                <img class="avatar" src="./src/user.png">
+                <div class="nav-username" id="username">Username</div>
+            </div>
+
+
+            <button class="nav-btn active" onclick="window.location.href='index.html'">Dashboard</button>
+            <button class="nav-btn" onclick="window.location.href='inventory.html'">Inventory Management</button>
+            <button class="nav-btn" onclick="window.location.href='user-management.html'">User Management</button>
+            <div class="inventory-menu">
+                <h4>Inventory</h4>
+                <div id="inventoryTree"></div>
+            </div>
+        </aside>
+
+
+        <!-- MAIN AREA -->
+        <div class="main">
+
+            <!-- HEADER -->
+            <header class="header">
+                <input type="text" id="searchBar" placeholder="Search...">
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </header>
+
+            <div class="dashboard-body">
+                <!-- DASHBOARD CONTENT -->
+                <section class="content">
+
+                    <h2>Dashboard</h2>
+
+                    <!-- STATS CARDS -->
+                    <div class="stats">
+                        <div class="card">
+                            <h3>Total Stock Value</h3>
+                            <h1 id="totalValue">₹ 0</h1>
+                        
+                            <!-- Warehouse breakdown will be inserted here -->
+                            <div id="warehouseValueBreakdown" class="warehouse-breakdown">
+                                <!-- Dynamically populated -->
+                            </div>
+                        </div>
+
+                        <div class="card chart-card">
+                            <h3>Space Utilization</h3>
+                            <div class="chart-container">
+                                <canvas id="spaceUtilChart"></canvas>
+                            </div>
+                            <div class="chart-legend" id="spaceUtilLegend"></div>
+                        </div>
+                    </div>
+
+                    <!-- CURRENT OCCUPANCY -->
+                    <div class="occupancy card">
+                        <h3>Current Occupancy</h3>
+                        <select id="warehouseSelect"></select>
+
+                        <div class="occupancy-grid">
+                            <p>Racks: <span id="rackCount">0</span></p>
+                            <p>Shelves: <span id="shelfCount">0</span></p>
+                            <p>Boxes: <span id="boxCount">0</span></p>
+                            <p>Items: <span id="itemCount">0</span></p>
+                        </div>
+                    </div>
+
+                    <!-- INVENTORY SECTION -->
+                    <div class="inventory-section card">
+                        <h3>Inventory</h3>
+                        <div id="rackCards"></div>  
+                    </div>
+                    
+                    <div class="recent-items card">
+                        <h3>Recent Items</h3>
+                        <div id="recentItems"></div>
+                    </div>
+                </section>
+
+                <!-- RIGHT SIDE ACTIVITY -->
+                <aside class="activity">
+                    <h3>Recent Activity</h3>
+                    <div id="activityList"></div>
+                </aside>
+                
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

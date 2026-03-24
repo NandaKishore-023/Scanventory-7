@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanventory - Sign Up</title>
+    <link rel="stylesheet" href="css/login.css">
+    <style>
+        body {
+            background: var(--bg-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 15px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .signup-container {
+            width: 100%;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .logo-wrapper {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .signup-logo {
+            max-width: 180px;
+            width: auto;
+            height: auto;
+            max-height: 70px;
+            background: var(--bg-card);
+            padding: 8px 20px;
+            border-radius: 40px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            border: 2px solid var(--primary);
+            object-fit: contain;
+        }
+
+        .signup-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 30px 25px;
+            width: 100%;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            box-sizing: border-box;
+        }
+
+        .signup-box h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            box-sizing: border-box;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(247, 197, 72, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+            opacity: 0.6;
+            font-size: 0.85rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(247, 197, 72, 0.2);
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.2s ease;
+            font-weight: 500;
+        }
+
+        .links a:hover {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            padding: 8px 12px;
+            background: rgba(231, 76, 60, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(231, 76, 60, 0.2);
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.85rem;
+            margin-top: 8px;
+            display: none;
+            padding: 8px 12px;
+            background: rgba(39, 174, 96, 0.1);
+            border-radius: 6px;
+            border: 1px solid rgba(39, 174, 96, 0.2);
+        }
+
+        .password-requirements {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* Override any dark theme variables with light theme */
+        :root {
+            --primary: #F7C548;
+            --primary-dark: #e0b038;
+            --accent: #437C90;
+            --bg-main: #EEEBD3;
+            --bg-card: #ffffff;
+            --bg-sidebar: #f8f5e6;
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6b7a;
+            --text-muted: #7f8c8d;
+            --border-color: #d9d0b5;
+            --success: #27ae60;
+            --danger: #e74c3c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="signup-container">
+        <div class="logo-wrapper">
+            <img src="./src/Scanventory-logo.png" alt="Scanventory Logo" class="signup-logo">
+        </div>
+
+        <div class="signup-box">
+            <h2>Create Organization Account</h2>
+
+            <div class="form-group">
+                <label>Organization Name</label>
+                <input type="text" id="orgName" placeholder="Enter organization name">
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="fullName" placeholder="Enter your full name">
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="email" placeholder="Enter your email">
+            </div>
+
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="password" placeholder="Enter password">
+                <div class="password-requirements">Minimum 6 characters</div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirmPassword" placeholder="Confirm password">
+            </div>
+
+            <div id="errorMessage" class="error-message"></div>
+            <div id="successMessage" class="success-message"></div>
+
+            <button class="btn" onclick="handleSignUp()">Create Account</button>
+
+            <div class="links">
+                <a href="login.html">Already have an account? Login</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script>
+        function getBaseUrl() {
+            const isLocalhost = window.location.hostname === 'localhost' ||
+                window.location.hostname === '127.0.0.1';
+
+            if (isLocalhost) {
+                return 'http://localhost:5500';
+            } else {
+                return 'https://nandakishore-023.github.io/Scanventory-7';
+            }
+        }
+
+        async function handleSignUp() {
+            console.log('🚀 handleSignUp started');
+
+            const orgName = document.getElementById('orgName').value;
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+
+            errorDiv.style.display = 'none';
+            successDiv.style.display = 'none';
+
+            if (!orgName || !fullName || !email || !password) {
+                errorDiv.textContent = 'Please fill in all fields';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                errorDiv.textContent = 'Passwords do not match';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            if (password.length < 6) {
+                errorDiv.textContent = 'Password must be at least 6 characters';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: email,
+                    password: password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            org_name: orgName,
+                            role: 'owner'
+                        },
+                        emailRedirectTo: getBaseUrl()
+                    }
+                });
+
+                if (error) throw error;
+
+                if (data.user) {
+                    successDiv.textContent = 'Account created successfully! Please check your email for verification.';
+                    successDiv.style.display = 'block';
+
+                    document.getElementById('orgName').value = '';
+                    document.getElementById('fullName').value = '';
+                    document.getElementById('email').value = '';
+                    document.getElementById('password').value = '';
+                    document.getElementById('confirmPassword').value = '';
+
+                    setTimeout(() => {
+                        window.location.href = 'login.html';
+                    }, 3000);
+                } else {
+                    errorDiv.textContent = 'Signup failed. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('❌ Signup exception:', error);
+                errorDiv.textContent = error.message || 'An error occurred during signup';
+                errorDiv.style.display = 'block';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

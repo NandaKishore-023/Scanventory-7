@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanventory - Inventory Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/inventory.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="js/qrGenerator.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/inventory.js"></script>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./src/Scanventory-logo.png" class="header-logo-img">
+            </div>
+
+            <div class="user">
+                <img class="avatar" src="./src/user.png">
+                <div class="nav-username" id="username">Username</div>
+            </div>
+
+            <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
+            <button class="nav-btn active" onclick="window.location.href='inventory.html'">Inventory Management</button>
+            <button class="nav-btn" onclick="window.location.href='user-management.html'">User Management</button>
+
+            <div class="inventory-menu">
+                <h4>Quick Navigation</h4>
+                <div id="inventoryTree"></div>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="main">
+            <!-- HEADER -->
+            <header class="header">
+                <input type="text" id="searchBar" placeholder="Search inventory...">
+                <div class="header-actions">
+                    <!-- <button class="btn-add" onclick="showAddModal()">+ Add</button> -->
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
+            </header>
+
+            <div class="dashboard-body">
+                <!-- INVENTORY MANAGEMENT CONTENT -->
+                <section class="content">
+                    <h2>Inventory Management</h2>
+
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <div class="tab active" onclick="switchTab('warehouses')">Warehouses</div>
+                        <div class="tab" onclick="switchTab('racks')">Racks</div>
+                        <div class="tab" onclick="switchTab('shelves')">Shelves</div>
+                        <div class="tab" onclick="switchTab('boxes')">Boxes</div>
+                        <div class="tab" onclick="switchTab('items')">Items</div>
+                    </div>
+
+                    <!-- WAREHOUSES TAB -->
+                    <div id="warehouses-tab" class="tab-content active">
+                        <div class="entity-list">
+                            <div class="list-header">
+                                <h3>Warehouses</h3>
+                                <button class="btn-add-small" onclick="showAddModal('warehouse')">+ Add
+                                    Warehouse</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="warehouseSearch" placeholder="Search warehouses..."
+                                    onkeyup="filterWarehouses()">
+                            </div>
+                            <div id="warehouseList"></div>
+                        </div>
+                    </div>
+
+                    <!-- RACKS TAB -->
+                    <div id="racks-tab" class="tab-content">
+                        <div class="entity-list">
+                            <div class="list-header">
+                                <h3>Racks</h3>
+                                <button class="btn-add-small" onclick="showAddModal('rack')">+ Add Rack</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="rackSearch" placeholder="Search racks..."
+                                    onkeyup="filterRacks()">
+                            </div>
+                            <div id="rackList"></div>
+                        </div>
+                    </div>
+
+                    <!-- SHELVES TAB -->
+                    <div id="shelves-tab" class="tab-content">
+                        <div class="entity-list">
+                            <div class="list-header">
+                                <h3>Shelves</h3>
+                                <button class="btn-add-small" onclick="showAddModal('shelf')">+ Add Shelf</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="shelfSearch" placeholder="Search shelves..."
+                                    onkeyup="filterShelves()">
+                            </div>
+                            <div id="shelfList"></div>
+                        </div>
+                    </div>
+
+                    <!-- BOXES TAB -->
+                    <div id="boxes-tab" class="tab-content">
+                        <div class="entity-list">
+                            <div class="list-header">
+                                <h3>Boxes</h3>
+                                <button class="btn-add-small" onclick="showAddModal('box')">+ Add Box</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="boxSearch" placeholder="Search boxes..." onkeyup="filterBoxes()">
+                            </div>
+                            <div id="boxList"></div>
+                        </div>
+                    </div>
+
+                    <!-- ITEMS TAB -->
+                    <div id="items-tab" class="tab-content">
+                        <div class="entity-list">
+                            <div class="list-header">
+                                <h3>Items</h3>
+                                <button class="btn-add-small" onclick="showAddModal('item')">+ Add Item</button>
+                                <button class="btn-move-small" onclick="showMoveModal()">↗️ Move Item</button>
+                            </div>
+                            <div class="search-box">
+                                <input type="text" id="itemSearch" placeholder="Search items..."
+                                    onkeyup="filterItems()">
+                            </div>
+                            <div id="itemList"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RIGHT SIDE ACTIVITY -->
+                <aside class="activity">
+                    <h3>Recent Activity</h3>
+                    <div id="activityList"></div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD ENTITY MODAL -->
+    <div id="addModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="addModalTitle">Add New Entity</h3>
+                <span class="close" onclick="closeAddModal()">&times;</span>
+            </div>
+            <div id="addModalBody" class="modal-body">
+                <!-- Content will be loaded dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MOVE ITEM MODAL -->
+    <div id="moveModal" class="modal" style="display: none;">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3>Move Item</h3>
+                <span class="close" onclick="closeMoveModal()">&times;</span>
+            </div>
+            <div id="moveModalBody" class="modal-body">
+                <div class="form-group">
+                    <label for="moveItemSelect">Select Item</label>
+                    <select id="moveItemSelect" class="form-control">
+                        <option value="">Select Item to Move</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="moveWarehouse">Destination Warehouse</label>
+                    <select id="moveWarehouse" class="form-control" onchange="loadDestinationRacks()">
+                        <option value="">Select Destination Warehouse</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="moveRack">Destination Rack</label>
+                    <select id="moveRack" class="form-control" onchange="loadDestinationShelves()">
+                        <option value="">Select Destination Rack</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="moveShelf">Destination Shelf</label>
+                    <select id="moveShelf" class="form-control" onchange="loadDestinationBoxes()">
+                        <option value="">Select Destination Shelf</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="moveBox">Destination Box (Optional)</label>
+                    <select id="moveBox" class="form-control">
+                        <option value="">(Optional) Select Box</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="moveQuantity">Quantity to Move</label>
+                    <input type="number" id="moveQuantity" class="form-control" placeholder="Enter quantity" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="moveReason">Reason for Move</label>
+                    <input type="text" id="moveReason" class="form-control"
+                        placeholder="e.g., Restocking, Reorganization">
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-success" onclick="moveItem()">Move Item</button>
+                    <button class="btn btn-secondary" onclick="closeMoveModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal (keep existing) -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="js/sidebar-toggle.js" defer></script>
+</body>
+
+</html>

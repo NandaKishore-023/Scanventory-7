@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanventory - User Management</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/user-management.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabaseClient.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/user-management.js"></script>
+</head>
+
+<body>
+    <div class="layout">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="./src/Scanventory-logo.png" class="header-logo-img">
+            </div>
+
+            <div class="user">
+                <img class="avatar" src="./src/user.png">
+                <div class="nav-username" id="username">Username</div>
+            </div>
+
+            <button class="nav-btn" onclick="window.location.href='index.html'">Dashboard</button>
+            <button class="nav-btn" onclick="window.location.href='inventory.html'">Inventory Management</button>
+            <button class="nav-btn active" onclick="window.location.href='user-management.html'">User
+                Management</button>
+
+            <div class="inventory-menu">
+                <h4>Quick Navigation</h4>
+                <div id="inventoryTree"></div>
+            </div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <div class="main">
+            <!-- HEADER -->
+            <header class="header">
+                <input type="text" id="searchBar" placeholder="Search users...">
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </header>
+
+            <div class="dashboard-body">
+                <section class="content user-management-container">
+                    <h2>User Management</h2>
+
+                    <!-- User Stats -->
+                    <div class="user-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalUsers">0</div>
+                            <div class="stat-label">Total Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="activeUsers">0</div>
+                            <div class="stat-label">Active Users</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="pendingInvites">0</div>
+                            <div class="stat-label">Pending Invites</div>
+                        </div>
+                    </div>
+
+                    <!-- Add User Section -->
+                    <div class="action-card">
+                        <h3>➕ Add New Employee</h3>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name</label>
+                                <input type="text" id="empFullName" placeholder="Enter full name">
+                            </div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                <input type="email" id="empEmail" placeholder="Enter email">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Employee ID (10 digits)</label>
+                                <input type="text" id="empId" placeholder="Enter 10-digit ID" maxlength="10">
+                            </div>
+                            <div class="form-group">
+                                <label>Temporary Password</label>
+                                <input type="text" id="empPassword" value="Temp@123" readonly>
+                                <small>Employee will be prompted to change on first login</small>
+                            </div>
+                        </div>
+
+                        <h4>Permissions</h4>
+                        <div class="permissions-grid">
+                            <div class="permission-item">
+                                <input type="checkbox" id="permCreate" checked>
+                                <label for="permCreate">Create</label>
+                            </div>
+                            <div class="permission-item">
+                                <input type="checkbox" id="permRead" checked disabled>
+                                <label for="permRead">Read (Always enabled)</label>
+                            </div>
+                            <div class="permission-item">
+                                <input type="checkbox" id="permUpdate" checked>
+                                <label for="permUpdate">Update</label>
+                            </div>
+                            <div class="permission-item">
+                                <input type="checkbox" id="permDelete">
+                                <label for="permDelete">Delete</label>
+                            </div>
+                            <div class="permission-item">
+                                <input type="checkbox" id="permMove">
+                                <label for="permMove">Move Items</label>
+                            </div>
+                        </div>
+
+                        <h4>Warehouse Access</h4>
+                        <div class="warehouse-select" id="warehouseAccess">
+                            <!-- Warehouses will be loaded here -->
+                        </div>
+
+                        <button class="btn btn-primary" onclick="createEmployee()" style="margin-top: 15px;">
+                            Create Employee Account
+                        </button>
+
+                        <!-- Invitation Link -->
+                        <div id="invitationContainer" style="display: none;">
+                            <div class="invitation-link">
+                                <input type="text" id="invitationLink" readonly>
+                                <button class="copy-btn" onclick="copyInvitationLink()">Copy Link</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Users List -->
+                    <div class="action-card">
+                        <h3>📋 Users List</h3>
+                        <div class="users-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Employee ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Status</th>
+                                        <th>Last Active</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersList">
+                                    <tr>
+                                        <td colspan="7" class="loading">Loading users...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Pending Invitations -->
+                    <div class="action-card">
+                        <h3>📨 Pending Invitations</h3>
+                        <div class="users-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Email</th>
+                                        <th>Employee ID</th>
+                                        <th>Name</th>
+                                        <th>Expires</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invitationsList">
+                                    <tr>
+                                        <td colspan="5" class="loading">Loading invitations...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- RIGHT SIDE ACTIVITY -->
+                <aside class="activity">
+                    <h3>User Activity</h3>
+                    <div id="activityList"></div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit User Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit User</h3>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+    <script src="js/sidebar-toggle.js" defer></script>
+</body>
+
+</html>
